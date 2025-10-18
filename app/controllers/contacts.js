@@ -1,9 +1,9 @@
 // app/controllers/contacts.js
-const ContactModel = require('../models/contacts'); 
+const ContactModel = require('../models/contacts');
 
+// CREATE
 module.exports.create = async function (req, res, next) {
   try {
-    console.log('Body:', req.body);
     const newContact = await ContactModel.create(req.body);
     res.status(201).json(newContact);
   } catch (error) {
@@ -12,6 +12,7 @@ module.exports.create = async function (req, res, next) {
   }
 };
 
+// LIST ALL
 module.exports.list = async function (req, res, next) {
   try {
     const list = await ContactModel.find();
@@ -22,40 +23,42 @@ module.exports.list = async function (req, res, next) {
   }
 };
 
-module.exports.contactByID = async function (req, res, next) {
+// GET BY ID
+module.exports.getById = async function (req, res, next) {
   try {
     const contact = await ContactModel.findById(req.params.id);
-    res.status(200).json(contact);
+    if (!contact) return res.status(404).json({ success: false, message: 'Not found' });
+    res.json(contact);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
+// UPDATE
 module.exports.update = async function (req, res, next) {
   try {
     const result = await ContactModel.updateOne({ _id: req.params.id }, req.body);
     if (result.modifiedCount > 0) {
-      res.json({ success: true, message: 'Contact updated successfully.' });
-    } else {
-      throw new Error('Contact not updated.');
+      return res.json({ success: true, message: 'Contact updated successfully.' });
     }
+    throw new Error('Contact not updated. Are you sure it exists?');
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-module.exports.delete = async function (req, res, next) {
+// DELETE
+module.exports.remove = async function (req, res, next) {
   try {
     const result = await ContactModel.deleteOne({ _id: req.params.id });
     if (result.deletedCount > 0) {
-      res.json({ success: true, message: 'Contact deleted successfully.' });
-    } else {
-      throw new Error('Contact not deleted.');
+      return res.json({ success: true, message: 'Contact deleted successfully.' });
     }
+    throw new Error('Contact not deleted. Are you sure it exists?');
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };

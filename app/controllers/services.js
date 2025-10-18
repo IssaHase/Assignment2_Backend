@@ -27,3 +27,20 @@ module.exports.remove = async (req, res, next) => {
     throw new Error('Service not deleted. Are you sure it exists?');
   } catch (e) { next(e); }
 };
+
+let ServiceModel = require('../models/services');
+
+// ... your other handlers ...
+
+module.exports.removeAll = async function (req, res, next) {
+  try {
+    const result = await ServiceModel.deleteMany({}); // remove everything
+    res.json({
+      success: true,
+      message: `Deleted ${result.deletedCount} service(s).`
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};

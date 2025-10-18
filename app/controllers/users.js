@@ -1,29 +1,69 @@
-let Model = require('../models/users');
+let UserModel = require('../models/users');
 
-module.exports.list = async (req, res, next) => {
-  try { res.json(await Model.find()); } catch (e) { next(e); }
-};
-
-module.exports.getById = async (req, res, next) => {
-  try { res.json(await Model.findById(req.params.id)); } catch (e) { next(e); }
-};
-
-module.exports.create = async (req, res, next) => {
-  try { res.json(await Model.create(req.body)); } catch (e) { next(e); }
-};
-
-module.exports.update = async (req, res, next) => {
+// CREATE
+module.exports.create = async function (req, res, next) {
   try {
-    const result = await Model.updateOne({ _id: req.params.id }, req.body);
-    if (result.modifiedCount > 0) return res.json({ success: true, message: 'User updated successfully.' });
-    throw new Error('User not updated. Are you sure it exists?');
-  } catch (e) { next(e); }
+    const user = await UserModel.create(req.body);
+    res.status(201).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
-module.exports.remove = async (req, res, next) => {
+// READ – ALL
+module.exports.list = async function (req, res, next) {
   try {
-    const result = await Model.deleteOne({ _id: req.params.id });
-    if (result.deletedCount > 0) return res.json({ success: true, message: 'User deleted successfully.' });
-    throw new Error('User not deleted. Are you sure it exists?');
-  } catch (e) { next(e); }
+    const list = await UserModel.find();
+    res.status(200).json(list);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// READ – BY ID
+module.exports.getById = async function (req, res, next) {
+  try {
+    const user = await UserModel.findById(req.params.id);
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// UPDATE
+module.exports.update = async function (req, res, next) {
+  try {
+    const result = await UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (result) res.status(200).json({ success: true, message: 'User updated successfully.' });
+    else throw new Error('User not found.');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// DELETE – BY ID
+module.exports.remove = async function (req, res, next) {
+  try {
+    const result = await UserModel.findByIdAndDelete(req.params.id);
+    if (result) res.status(200).json({ success: true, message: 'User deleted successfully.' });
+    else throw new Error('User not found.');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// DELETE – ALL
+module.exports.removeAll = async function (req, res, next) {
+  try {
+    const result = await UserModel.deleteMany({});
+    res.json({ success: true, message: `Deleted ${result.deletedCount} user(s).` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 };

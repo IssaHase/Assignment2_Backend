@@ -3,8 +3,9 @@ var router = express.Router();
 var ctrl = require('../controllers/users');
 
 router.get('/', ctrl.list);
-router.get('/:id', ctrl.getById);
 router.post('/', ctrl.create);
+router.delete('/', ctrl.removeAll);  
+router.get('/:id', ctrl.getById);
 router.put('/:id', ctrl.update);
 router.delete('/:id', ctrl.remove);
 

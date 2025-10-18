@@ -15,6 +15,10 @@ var app = express();
 
 configDb(); // connect to MongoDB
 
+const usersRouter = require('./app/routers/users');
+app.use('/api/users', usersRouter);
+
+
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());

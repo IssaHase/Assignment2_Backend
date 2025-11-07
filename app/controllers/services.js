@@ -30,11 +30,11 @@ module.exports.remove = async (req, res, next) => {
 
 let ServiceModel = require('../models/services');
 
-// ... your other handlers ...
+
 
 module.exports.removeAll = async function (req, res, next) {
   try {
-    const result = await ServiceModel.deleteMany({}); // remove everything
+    const result = await ServiceModel.deleteMany({}); 
     res.json({
       success: true,
       message: `Deleted ${result.deletedCount} service(s).`

@@ -26,10 +26,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', indexRouter);
 
 // resource routers
+app.use("/api/projects", projectsRouter);
 app.use('/api/contacts',  contactRouter);
 app.use('/api/projects',  projectsRouter);
 app.use('/api/services',  servicesRouter);
 app.use('/api/users',     usersRouter);
+app.use("/users", usersRouter);
 
 // 404 forwarder
 app.use(function(req, res, next) {

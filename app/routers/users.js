@@ -1,12 +1,14 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var ctrl = require('../controllers/users');
+var ctrl = require("../controllers/users");
 
-router.get('/', ctrl.list);
-router.post('/', ctrl.create);
-router.delete('/', ctrl.removeAll);  
-router.get('/:id', ctrl.getById);
-router.put('/:id', ctrl.update);
-router.delete('/:id', ctrl.remove);
+router.route("/")
+  .get(ctrl.list)
+  .post(ctrl.create);
+
+router.route("/:id")
+  .get(ctrl.getById)
+  .put(ctrl.update)
+  .delete(ctrl.remove);
 
 module.exports = router;

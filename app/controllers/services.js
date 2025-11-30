@@ -1,46 +1,51 @@
 let Model = require('../models/services');
 
-module.exports.list = async (req, res, next) => {
-  try { res.json(await Model.find()); } catch (e) { next(e); }
+// GET all services
+exports.getServices = async (req, res) => {
+  try {
+    const data = await Model.find();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-module.exports.getById = async (req, res, next) => {
-  try { res.json(await Model.findById(req.params.id)); } catch (e) { next(e); }
+// GET by ID (optional)
+exports.getServiceById = async (req, res) => {
+  try {
+    const item = await Model.findById(req.params.id);
+    res.json(item);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-module.exports.create = async (req, res, next) => {
-  try { res.json(await Model.create(req.body)); } catch (e) { next(e); }
+// CREATE a service
+exports.createService = async (req, res) => {
+  try {
+    const newService = await Model.create(req.body);
+    res.status(201).json(newService);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-module.exports.update = async (req, res, next) => {
+// UPDATE a service
+exports.updateService = async (req, res) => {
   try {
     const result = await Model.updateOne({ _id: req.params.id }, req.body);
-    if (result.modifiedCount > 0) return res.json({ success: true, message: 'Service updated successfully.' });
-    throw new Error('Service not updated. Are you sure it exists?');
-  } catch (e) { next(e); }
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-module.exports.remove = async (req, res, next) => {
+// DELETE a service
+exports.deleteService = async (req, res) => {
   try {
     const result = await Model.deleteOne({ _id: req.params.id });
-    if (result.deletedCount > 0) return res.json({ success: true, message: 'Service deleted successfully.' });
-    throw new Error('Service not deleted. Are you sure it exists?');
-  } catch (e) { next(e); }
-};
-
-let ServiceModel = require('../models/services');
-
-
-
-module.exports.removeAll = async function (req, res, next) {
-  try {
-    const result = await ServiceModel.deleteMany({}); 
-    res.json({
-      success: true,
-      message: `Deleted ${result.deletedCount} service(s).`
-    });
-  } catch (error) {
-    console.log(error);
-    next(error);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
